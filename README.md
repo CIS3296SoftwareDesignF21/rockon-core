@@ -1,6 +1,6 @@
 # Project
 
-See [here](https://github.com/CIS3296SoftwareDesignF21/rockon-core) for the client application
+See [here](https://github.com/CIS3296SoftwareDesignF21/rockon-mobile) for the client application
 
 # How to Run
 
