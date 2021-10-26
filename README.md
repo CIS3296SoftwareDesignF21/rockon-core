@@ -1,5 +1,7 @@
 # Project
 
+See [here](https://github.com/CIS3296SoftwareDesignF21/rockon-core) for the client application
+
 # How to Run
 
 1. Clone the repository
