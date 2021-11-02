@@ -19,6 +19,9 @@ will allow users to register, create and update a profile, swipe through potenti
 of matched partners.
 
 ## Vision Statement
+For rock climbers who want to climb with others of a similar skill and ability, RockOn is a mobile app for iOS or Android that lets you create and sort through profiles of other climbers to finds those who are most compatible as climbing partners.
+
+Unlike searching online in local Facebook groups or asking around at your local gym, the focus of RockOn if efficiency and breadth. With RockOn you can filter through many descriptive profiles of different climbers and get in contact with them right away.
 
 ## Personas
 ### Ronnie the Gym Owner
