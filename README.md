@@ -21,7 +21,10 @@ of matched partners.
 ## Vision Statement
 
 ## Personas
+### Ronnie the Gym Owner
+Ronnie, age 43, is a gym owner in Chicago, Illinois. His location has weights and gym machines, but also a portion of the building dedicated to bouldering (indoor rock climbing without a rope). Patrons to his gym generally use the weight training equipment, but the climbing wall only on occasion. Ronnie wants to make his gym known to local climbers in Chicago and anyone looking to get into the hobby.
 
+Ronnie knows how to use basic technology like payroll and timecard management software. He is primarily interested in creating a Location Profile in RockOn so that climbers can list his gym as their “main gym” in their profiles, and new users to the app see his gym as a potential place to climb indoors.
 
 
 # How to Run
