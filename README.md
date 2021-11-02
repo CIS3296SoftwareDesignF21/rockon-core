@@ -36,6 +36,9 @@ Ingrid is well versed with technology. She is great with social media apps such 
 like RockOn might be somewhat interesting for her because it would be something different from simply looking through Facebook groups. 
 Ingrid is interested in using RockOn because it would allow her to join the rock climbing community that she had missed out on while she was climbing solo.
 
+### Filip the Avid Rock Climber
+Filip, age 25, is a graduate student who loves rock climbing. He climbs as many times as he can a week. He is very passionate about climbing and is looking for like-minded people. He is specifically looking for people around his skill level who will motivate him to do better in his competitions. Since Filip is reaching the end of his graduate school career, Filip has decided to focus more on school but still putting time into rock climbing.  He is also putting into consideration that he would be looking for a partner who would be okay with him having to cancel last minute.
+Filip is a graduate student who understands various technologies well and is proficient at learning how to use new apps fairly quickly. He is very interested in finding people who have a similar passion to rock climbing as he does and thinks RockOn could potentially find people who are willing to understand that he is a busy student but also is passionate about rock climbing. He will be more than likely be very picky about his partner.
 
 # How to Run
 
