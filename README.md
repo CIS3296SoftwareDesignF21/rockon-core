@@ -26,6 +26,16 @@ Ronnie, age 43, is a gym owner in Chicago, Illinois. His location has weights an
 
 Ronnie knows how to use basic technology like payroll and timecard management software. He is primarily interested in creating a Location Profile in RockOn so that climbers can list his gym as their “main gym” in their profiles, and new users to the app see his gym as a potential place to climb indoors.
 
+### Ingrid the Office Worker
+Ingrid, age 46, is your normal day-to-day office worker. One very interesting thing is that she is very into rock climbing
+and she has mostly done it solo since her significant other is not into rock climbing. Throughout, her time rock climbing Ingrid has managed
+to go solo. However, due to recent events and of course because of her age, Ingrid is looking to find partners at her skill level or
+even new rock climbers to teach. She is very open to different types of people and likes to rock climb either in indoor gyms or outdoors.
+
+Ingrid is well versed with technology. She is great with social media apps such as Facebook and Instagram. Aside from those two a new app
+like RockOn might be somewhat interesting for her because it would be something different from simply looking through Facebook groups. 
+Ingrid is interested in using RockOn because it would allow her to join the rock climbing community that she had missed out on while she was climbing solo.
+
 
 # How to Run
 
