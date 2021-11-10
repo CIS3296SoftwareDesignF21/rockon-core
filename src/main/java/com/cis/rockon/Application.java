@@ -2,7 +2,6 @@ package com.cis.rockon;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import springfox.documentation.builders.PathSelectors;
@@ -18,9 +17,7 @@ import java.util.Collections;
 
 @SpringBootApplication
 @EnableSwagger2
-//@EntityScan("com.cis.model")
 @EnableJpaRepositories
-//@EnableJpaRepositories("com.cis.rockon.repository")
 public class Application {
 
     public static void main(String[] args) {
