@@ -63,7 +63,7 @@ Although Tyler is young, he is like an old person when it comes to technology. H
 1. Clone this repository
 2. Install [Maven](https://maven.apache.org/install.html)
 3. Install the dependancies specified in `pom.xml` by running `mvn install`
-4. Run the SpringBoot application by running `mvn spring-boot:run`
+4. Run the SpringBoot application by running `mvn spring-boot:run` (note: Java 11 is required)
 
 # Week 2 Readme Link
 
