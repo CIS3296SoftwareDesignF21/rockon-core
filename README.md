@@ -60,7 +60,7 @@ Although Tyler is young, he is like an old person when it comes to technology. H
 
 
 
-# How to Install (easy)
+# How to Install
 
 See the [mobile repository](https://github.com/CIS3296SoftwareDesignF21/rockon-mobile) to install the client application!
 
@@ -75,6 +75,9 @@ See the [mobile repository](https://github.com/CIS3296SoftwareDesignF21/rockon-m
 3. Install the dependancies specified in `pom.xml` by running `mvn install`
 4. Run the SpringBoot application by running `mvn spring-boot:run` (note: Java 11 is required)
 
-# Week 2 Readme Link
+# Weekly READMEs
+## Week 2
+https://github.com/CIS3296SoftwareDesignF21/rockon-mobile/blob/master/Week2Readme.md
 
-https://github.com/CIS3296SoftwareDesignF21/rockon-mobile/blob/master/Week2Readm.md
+## Week 3
+https://github.com/CIS3296SoftwareDesignF21/rockon-mobile/blob/master/Week3Readme.md
