@@ -59,7 +59,17 @@ Although Tyler is young, he is like an old person when it comes to technology. H
 # How to Run
 
 
-# How to Install
+
+# How to Install (easy)
+
+See the [mobile repository](https://github.com/CIS3296SoftwareDesignF21/rockon-mobile) to install the client application!
+
+## Easy way
+1. Download the latest release (RockOn.jar from releases)
+2. Run `java -jar RockOn.jar` (note: Java 11 is required)
+3. Visit localhost:8000/swagger-ui/#/ to see API endpoints and models
+
+## More difficult way
 1. Clone this repository
 2. Install [Maven](https://maven.apache.org/install.html)
 3. Install the dependancies specified in `pom.xml` by running `mvn install`
