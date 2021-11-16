@@ -67,7 +67,7 @@ See the [mobile repository](https://github.com/CIS3296SoftwareDesignF21/rockon-m
 ## Easy way
 1. Download the latest release (RockOn.jar from releases)
 2. Run `java -jar RockOn.jar` (note: Java 11 is required)
-3. Visit localhost:8000/swagger-ui/#/ to see API endpoints and models
+3. Visit localhost:8080/swagger-ui/#/ to see API endpoints and models
 
 ## More difficult way
 1. Clone this repository
