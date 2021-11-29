@@ -1,7 +1,13 @@
 package com.cis.rockon;
 
+import com.cis.rockon.model.User;
+import com.cis.rockon.repository.UserRepository;
+import com.cis.rockon.model.Location;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import springfox.documentation.builders.PathSelectors;
@@ -12,13 +18,18 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableSwagger2
 @EnableJpaRepositories
 public class Application {
+
+    @Autowired
+    UserRepository repository;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -45,5 +56,46 @@ public class Application {
                 "https://www.gnu.org/licenses/old-licenses/gpl-2.0.html",
                 Collections.emptyList()
         );
+    }
+
+    @Bean
+    public CommandLineRunner CommandLineRunnerBean() {
+        return (args) -> {
+
+            User[] mockUsers = new User[]{
+                    new User()
+                            .setFirstName("Hooter T.").setLastName("Owl")
+                            .setPhoneNumber("215 420 6969").setEmail("cis1@temple.edu")
+                            .setBirthday(LocalDate.ofEpochDay(0)).setBiography("I'm just here to test!").setYearsOfExperience(69)
+                            .setLastSeenLocation(new Location(39.981996346936, -75.153041291542)) // SERC
+                            .setSearchRadius(25 /* km */).setTypeSportClimbing(true).setTypeFreeSolo(true)
+                            .setTypeTopRope(false).setTypeFreeSolo(false).setTypeBouldering(null),
+                    new User()
+                            .setFirstName("Stella D.").setLastName("Owl")
+                            .setPhoneNumber("215 420 6969").setEmail("cis2@temple.edu")
+                            .setBirthday(LocalDate.ofEpochDay(0)).setBiography("I'm just here to test!").setYearsOfExperience(420)
+                            .setLastSeenLocation(new Location(39.981348547211, -75.154349633751)) // Bell Tower
+                            .setSearchRadius(25 /* km */).setTypeSportClimbing(true).setTypeFreeSolo(true)
+                            .setTypeTopRope(false).setTypeFreeSolo(false).setTypeBouldering(null),
+                    new User()
+                            .setFirstName("Jason").setLastName("Wingard")
+                            .setPhoneNumber("215 420 6969").setEmail("president@temple.edu")
+                            .setBirthday(LocalDate.ofEpochDay(0)).setBiography("I'm just here to test!").setYearsOfExperience(69)
+                            .setLastSeenLocation(new Location(39.9806376631842, -75.154914261904)) // Tuttleman
+                            .setSearchRadius(25 /* km */).setTypeSportClimbing(true).setTypeFreeSolo(true)
+                            .setTypeTopRope(false).setTypeFreeSolo(true).setTypeBouldering(null),
+                    new User()
+                            .setFirstName("Dick").setLastName("Cheney")
+                            .setPhoneNumber("215 420 6969").setEmail("dick@temple.edu")
+                            .setBirthday(LocalDate.ofEpochDay(0)).setBiography("I'm just here to test!").setYearsOfExperience(69)
+                            .setLastSeenLocation(new Location(38.8976579135955, -77.036553189077)) // White House
+                            .setSearchRadius(25 /* km */).setTypeSportClimbing(true).setTypeFreeSolo(true)
+                            .setTypeTopRope(false).setTypeFreeSolo(false).setTypeBouldering(null)
+            };
+
+            mockUsers[0].getConnections()
+
+            repository.saveAll(Arrays.asList(mockUsers));
+        };
     }
 }

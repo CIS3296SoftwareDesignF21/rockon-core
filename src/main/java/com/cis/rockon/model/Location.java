@@ -1,17 +1,31 @@
-package com.cis.rockon.util;
+package com.cis.rockon.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.Node;
 
-import javax.persistence.Embeddable;
-
-@Embeddable
-@AllArgsConstructor
+@Node("Location")
+@Setter @Getter
 public class Location {
 
+    @Id
+    @GeneratedValue
+    private Long id;
+
     private double longitude;
+
     private double latitude;
 
+    public Location(double longitude, double latitude) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
     public Location() {
+
     }
 
     // https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula

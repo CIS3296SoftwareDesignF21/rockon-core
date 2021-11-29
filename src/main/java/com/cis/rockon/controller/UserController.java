@@ -6,8 +6,11 @@ import com.cis.rockon.repository.UserRepository;
 import org.hibernate.PropertyValueException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.neo4j.core.Neo4jOperations;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +23,7 @@ public class UserController {
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    private UserRepository repository;
+    private final UserRepository repository;
 
     public UserController(UserRepository repository) {
         this.repository = repository;
@@ -29,9 +32,8 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<User> createNewUser(@RequestBody User newUser) {
         try {
-
-            User user = repository.save(newUser);
-            return ResponseEntity.ok().body(repository.save(user));
+            logger.error(newUser.toString());
+            return ResponseEntity.ok().body(repository.save(newUser));
 
             /* if the posted data is missing values that are required
              * or if we have a unique constraint violation */

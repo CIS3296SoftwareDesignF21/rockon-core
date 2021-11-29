@@ -1,22 +1,24 @@
 package com.cis.rockon.controller;
 
 
+import com.cis.rockon.model.Location;
 import com.cis.rockon.model.User;
 import com.cis.rockon.repository.UserRepository;
-import com.cis.rockon.util.Location;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.neo4j.DataNeo4jTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
@@ -32,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DataNeo4jTest
 class UserControllerTest {
 
     private final Logger logger = LoggerFactory.getLogger(UserControllerTest.class);
@@ -49,6 +52,10 @@ class UserControllerTest {
 
     private User user;
 
+    public UserControllerTest() {
+        mapper.registerModule(new JavaTimeModule());
+    }
+
     @BeforeEach
     void setUp() {
 
@@ -60,7 +67,7 @@ class UserControllerTest {
                 .setLastName("Owl")
                 .setPhoneNumber("215 420 6969")
                 .setEmail("cis@temple.edu")
-                .setBirthday(new Date(0))
+                .setBirthday(LocalDate.ofEpochDay(0))
                 .setBiography("I'm just here to test!")
                 .setYearsOfExperience(69)
                 .setLastSeenLocation(new Location(0, 0))
@@ -180,19 +187,19 @@ class UserControllerTest {
         User[] mockUsers = {
                 new User()
                         .setId(1L).setFirstName("Hooter T.").setLastName("Owl").setPhoneNumber("215 420 6969")
-                        .setEmail("cis1@temple.edu").setBirthday(new Date(0)).setLastSeenLocation(new Location(0, 0))
+                        .setEmail("cis1@temple.edu").setBirthday(LocalDate.ofEpochDay(0)).setLastSeenLocation(new Location(0, 0))
                         .setBiography("I'm just here to test!").setYearsOfExperience(69).setTypeSportClimbing(true)
                         .setTypeFreeSolo(true).setTypeTopRope(false).setTypeFreeSolo(false).setTypeBouldering(null)
                         .setSearchRadius(1),
                 new User()
                         .setId(2L).setFirstName("Hooter T.").setLastName("Owl").setPhoneNumber("215 420 6969")
-                        .setEmail("cis2@temple.edu").setBirthday(new Date(0)).setLastSeenLocation(new Location(0, 0))
+                        .setEmail("cis2@temple.edu").setBirthday(LocalDate.ofEpochDay(0)).setLastSeenLocation(new Location(0, 0))
                         .setBiography("I'm just here to test!").setYearsOfExperience(69).setTypeSportClimbing(true)
                         .setTypeFreeSolo(true).setTypeTopRope(false).setTypeFreeSolo(false).setTypeBouldering(null)
                         .setSearchRadius(1),
                 new User()
                         .setId(3L).setFirstName("Hooter T.").setLastName("Owl").setPhoneNumber("215 420 6969")
-                        .setEmail("cis3@temple.edu").setBirthday(new Date(0)).setLastSeenLocation(new Location(0, 0))
+                        .setEmail("cis3@temple.edu").setBirthday(LocalDate.ofEpochDay(0)).setLastSeenLocation(new Location(0, 0))
                         .setBiography("I'm just here to test!").setYearsOfExperience(69).setTypeSportClimbing(true)
                         .setTypeFreeSolo(true).setTypeTopRope(false).setTypeFreeSolo(false).setTypeBouldering(null)
                         .setSearchRadius(1)
@@ -207,7 +214,7 @@ class UserControllerTest {
                 .getContentAsString();
 
         List<User> actual = Arrays.asList(mapper.readValue(result, User[].class));
-        assertEquals(actual.size(), 3);
+        assertEquals(3, actual.size());
         assertThat(actual, containsInAnyOrder(mockUsers));
     }
 

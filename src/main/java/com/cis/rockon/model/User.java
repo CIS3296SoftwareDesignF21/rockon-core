@@ -2,68 +2,70 @@ package com.cis.rockon.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sun.istack.NotNull;
-import com.cis.rockon.util.Location;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
-import javax.persistence.*;
 import javax.validation.constraints.Email;
-import java.sql.Date;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.time.LocalDate;
 
-@Entity
+
+
+@Node
 @ToString
 @RequiredArgsConstructor
 @Getter @Setter
 @Accessors(chain = true)
-@Table(name = "user_account")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue
     private Long id;
 
     @NotNull
-    @Column(nullable = false)
     private String firstName;
 
     @NotNull
     private String lastName;
 
     @NotNull
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String phoneNumber;
 
     @NotNull
-    @Column(nullable = false, unique = true)
+//    @Column(nullable = false, unique = true)
     @Email
     private String email;
 
     @NotNull
-    @Column(nullable = false, updatable = false)
-    private Date birthday;
+//    @Column(nullable = false, updatable = false)
+    private LocalDate birthday;
 
-    @Embedded
     private Location lastSeenLocation;
 
-    @Column(columnDefinition = "integer default 25")
+//    @Column(columnDefinition = "integer default 25")
     private Integer searchRadius;
 
     @NotNull
-    @Column(nullable = false)
+//    @Column(nullable = false)
     @Length(min=100, max=500)
     private String biography;
 
     @NotNull
-    @Column(nullable = false)
+//    @Column(nullable = false)
     @Range(min=0, max=99)
     private Integer yearsOfExperience;
 
@@ -74,17 +76,18 @@ public class User {
     private Boolean typeFreeSolo;
     private Boolean typeBouldering;
 
-    /* set of users that this user has swiped on */
-    @JsonBackReference(value="swipes")
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Relationship(type = "SWIPED-ON", direction = Relationship.Direction.OUTGOING)
     @ToString.Exclude
-    private Set<User> swipes = new HashSet<>();
+    private List<User> swipedOn = new ArrayList<>();
 
-    /* set of users that this user has matched with */
-    @JsonBackReference(value="connections")
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Relationship(type = "SWIPED-ON-BY", direction = Relationship.Direction.INCOMING)
     @ToString.Exclude
-    private Set<User> connections = new HashSet<>();
+    private List<User> swipedOnBy = new ArrayList<>();
+
+    // technically a bidirectional relationship, but we specify this at query time
+    @Relationship(type = "CONNECTIONS", direction = Relationship.Direction.INCOMING)
+    @ToString.Exclude
+    private List<User> connections = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

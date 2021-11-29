@@ -33,10 +33,11 @@ public class UserQueueController {
             notes = "Returns up to 25 users that match the requesting user's preferences")
     public ResponseEntity<List<User>> getUsersSwipeQueue(@PathVariable Long id)  {
 
-        if (!repository.existsById(id))
+
+        if (repository.findById(id).isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
-        User user = repository.getById(id);
+        User user = repository.findById(id).get();
 
         List<User> users = repository.findAll();
 
@@ -45,7 +46,7 @@ public class UserQueueController {
                 .unordered()
                 .filter(otherUser ->
                         !user.equals(otherUser) && user.preferenceMatch(otherUser) &&
-                        !user.getSwipes().contains(otherUser))
+                        !user.getSwipedOn().contains(otherUser))
                 .limit(25)
                 .collect(Collectors.toList());
 
@@ -56,18 +57,20 @@ public class UserQueueController {
     @GetMapping("/swipe/{id}")
     public ResponseEntity<Void> swipeOnUser(@PathVariable Long id, @RequestParam("user") Long otherUser) {
 
-        if ( !(repository.existsById(id) && repository.existsById(otherUser)) )
+
+
+        if (repository.findById(id).isEmpty() || repository.findById(otherUser).isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         /* resolve the persistence issues here!! the sets are not persisting
          * properly */
-        User user = repository.getById(id);
-        User other = repository.getById(otherUser);
+        User user = repository.findById(id).get();
+        User other = repository.findById(otherUser).get();
 
-        user.getSwipes().add(other);
+        user.getSwipedOn().add(other);
         user = repository.save(user);
 
-        if (user.getSwipes().contains(other) && other.getSwipes().contains(user)) {
+        if (user.getSwipedOn().contains(other) && other.getSwipedOn().contains(user)) {
             user.getConnections().add(other);
             other.getConnections().add(user);
 
