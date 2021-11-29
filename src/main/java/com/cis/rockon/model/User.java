@@ -1,6 +1,6 @@
 package com.cis.rockon.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
@@ -16,6 +15,8 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.Email;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,30 +43,25 @@ public class User {
     private String lastName;
 
     @NotNull
-//    @Column(nullable = false)
     private String phoneNumber;
 
     @NotNull
-//    @Column(nullable = false, unique = true)
     @Email
     private String email;
 
     @NotNull
-//    @Column(nullable = false, updatable = false)
     private LocalDate birthday;
 
-    private Location lastSeenLocation;
+    private double[] lastSeenLocation = new double[2];
 
-//    @Column(columnDefinition = "integer default 25")
-    private Integer searchRadius;
+    @Range(min=1, max=25)
+    private Integer searchRadius = 25;
 
     @NotNull
-//    @Column(nullable = false)
-    @Length(min=100, max=500)
+    @Length(max=500)
     private String biography;
 
     @NotNull
-//    @Column(nullable = false)
     @Range(min=0, max=99)
     private Integer yearsOfExperience;
 
@@ -76,18 +72,12 @@ public class User {
     private Boolean typeFreeSolo;
     private Boolean typeBouldering;
 
-    @Relationship(type = "SWIPED-ON", direction = Relationship.Direction.OUTGOING)
-    @ToString.Exclude
-    private List<User> swipedOn = new ArrayList<>();
-
-    @Relationship(type = "SWIPED-ON-BY", direction = Relationship.Direction.INCOMING)
-    @ToString.Exclude
-    private List<User> swipedOnBy = new ArrayList<>();
-
     // technically a bidirectional relationship, but we specify this at query time
+    // user.connections.add(other) if user swipes on other
     @Relationship(type = "CONNECTIONS", direction = Relationship.Direction.INCOMING)
     @ToString.Exclude
-    private List<User> connections = new ArrayList<>();
+    @JsonIgnore
+    List<User> connections = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
@@ -109,8 +99,8 @@ public class User {
                 this.typeTradClimbing == other.typeTradClimbing &&
                 this.typeTopRope == other.typeTopRope &&
                 this.typeFreeSolo == other.typeFreeSolo &&
-                this.typeBouldering == other.typeBouldering &&
-                !(this.lastSeenLocation.distance(other.lastSeenLocation) > this.searchRadius);
+                this.typeBouldering == other.typeBouldering; // &&
+//                !(this.lastSeenLocation.distance(other.lastSeenLocation) > this.searchRadius);
 
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -32,8 +33,9 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<User> createNewUser(@RequestBody User newUser) {
         try {
-            logger.error(newUser.toString());
-            return ResponseEntity.ok().body(repository.save(newUser));
+            newUser.setId(null);
+            User user = repository.save(newUser);
+            return ResponseEntity.ok().body(user);
 
             /* if the posted data is missing values that are required
              * or if we have a unique constraint violation */
@@ -59,7 +61,8 @@ public class UserController {
     @GetMapping("")
     public ResponseEntity<List<User>> getAllUsers() {
 
-        return ResponseEntity.ok(repository.findAll());
+        List<User> users = repository.findAll();
+        return ResponseEntity.ok(users);
 
     }
 

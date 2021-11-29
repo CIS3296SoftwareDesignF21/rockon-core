@@ -9,13 +9,22 @@ import java.util.List;
 
 public interface UserRepository extends Neo4jRepository<User, Long> {
 
-    @Query("MATCH (connection:User)-[:CONNECTIONS] RETURN connection")
-    List<User> getConnections(@Param("u") User u);
+    @Query("MATCH (u:User) WHERE ID(u) = user\n" +
+           "MATCH (u)<-[:CONNECTIONS]-(matches) \n" +
+           "WITH collect(matches) as incoming\n" +
+           "MATCH (u)-[:CONNECTIONS]->(matches)\n" +
+           "WHERE matches IN incoming\n" +
+           "RETURN matches")
+    List<User> getConnections(@Param("user") Long id);
 
-    @Query("MATCH (u:User)<-[:CONNECTIONS] RETURN u")
-    List<User> getSwipedOn(@Param("userId") Long userId);
+    @Query("MATCH (u) WHERE ID(u) = user\n" +
+           "MATCH (u)<-[:CONNECTIONS]-(swipes)\n" +
+           "RETURN swipes")
+    List<User> getSwipedOnBy(@Param("user") Long id);
 
-    @Query("MATCH (u:User)->[:CONNECTIONS] RETURN u")
-    List<User> getSwipedOnBy(@Param("userId") Long userId);
+    @Query("MATCH (u) WHERE ID(u) = user\n" +
+           "MATCH (u)-[:CONNECTIONS]->(swipes)\n" +
+           "RETURN swipes")
+    List<User> getSwipedOn(@Param("user") Long id);
 
 }

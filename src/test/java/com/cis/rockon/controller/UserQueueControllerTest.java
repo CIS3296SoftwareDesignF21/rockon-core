@@ -17,7 +17,12 @@ import org.springframework.boot.test.autoconfigure.data.neo4j.DataNeo4jTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.Neo4jContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -29,10 +34,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DataNeo4jTest
+@Testcontainers
 public class UserQueueControllerTest {
 
     private final Logger logger = LoggerFactory.getLogger(UserQueueController.class);
+
+    private static final String PASSWORD = "foobar";
+
+    @Container
+    private static final Neo4jContainer<?> neo4jContainer = new Neo4jContainer<>("neo4j:" + env())
+            .withAdminPassword(PASSWORD);
+
+    @DynamicPropertySource
+    static void neo4jProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.neo4j.uri", neo4jContainer::getBoltUrl);
+        registry.add("spring.neo4j.authentication.username", () -> "neo4j");
+        registry.add("spring.neo4j.authentication.password", () -> PASSWORD);
+        registry.add("spring.data.neo4j.database", () -> "neo4j");
+    }
 
     @Autowired
     UserQueueController controller;
@@ -58,28 +77,28 @@ public class UserQueueControllerTest {
                         .setFirstName("Hooter T.").setLastName("Owl")
                         .setPhoneNumber("215 420 6969").setEmail("cis1@temple.edu")
                         .setBirthday(LocalDate.ofEpochDay(0)).setBiography("I'm just here to test!").setYearsOfExperience(69)
-                        .setLastSeenLocation(new Location(39.981996346936, -75.153041291542)) // SERC
+                        .setLastSeenLocation(new double[]{39.981996346936, -75.153041291542}) // SERC
                         .setSearchRadius(25 /* km */).setTypeSportClimbing(true).setTypeFreeSolo(true)
                         .setTypeTopRope(false).setTypeFreeSolo(false).setTypeBouldering(null),
                 new User()
                         .setFirstName("Stella D.").setLastName("Owl")
                         .setPhoneNumber("215 420 6969").setEmail("cis2@temple.edu")
                         .setBirthday(LocalDate.ofEpochDay(0)).setBiography("I'm just here to test!").setYearsOfExperience(420)
-                        .setLastSeenLocation(new Location(39.981348547211, -75.154349633751)) // Bell Tower
+                        .setLastSeenLocation(new double[]{39.981348547211, -75.154349633751}) // Bell Tower
                         .setSearchRadius(25 /* km */).setTypeSportClimbing(true).setTypeFreeSolo(true)
                         .setTypeTopRope(false).setTypeFreeSolo(false).setTypeBouldering(null),
                 new User()
                         .setFirstName("Jason").setLastName("Wingard")
                         .setPhoneNumber("215 420 6969").setEmail("president@temple.edu")
                         .setBirthday(LocalDate.ofEpochDay(0)).setBiography("I'm just here to test!").setYearsOfExperience(69)
-                        .setLastSeenLocation(new Location(39.9806376631842, -75.154914261904)) // Tuttleman
+                        .setLastSeenLocation(new double[]{39.9806376631842, -75.154914261904}) // Tuttleman
                         .setSearchRadius(25 /* km */).setTypeSportClimbing(true).setTypeFreeSolo(true)
                         .setTypeTopRope(false).setTypeFreeSolo(true).setTypeBouldering(null),
                 new User()
                         .setFirstName("Dick").setLastName("Cheney")
                         .setPhoneNumber("215 420 6969").setEmail("dick@temple.edu")
                         .setBirthday(LocalDate.ofEpochDay(0)).setBiography("I'm just here to test!").setYearsOfExperience(69)
-                        .setLastSeenLocation(new Location(38.8976579135955, -77.036553189077)) // White House
+                        .setLastSeenLocation(new double[]{38.8976579135955, -77.036553189077}) // White House
                         .setSearchRadius(25 /* km */).setTypeSportClimbing(true).setTypeFreeSolo(true)
                         .setTypeTopRope(false).setTypeFreeSolo(false).setTypeBouldering(null)
         };
@@ -109,7 +128,6 @@ public class UserQueueControllerTest {
 
     @Test
     @DirtiesContext
-    @Disabled
     public void swipeOnUser() throws Exception {
         repository.saveAll(Arrays.asList(users));
 
@@ -120,7 +138,7 @@ public class UserQueueControllerTest {
 
         users = repository.findAll().toArray(new User[0]);
 
-        assertTrue(users[0].getSwipedOn().contains(users[1]));
+        assertTrue(repository.getSwipedOn(users[0].getId()).contains(users[1]));
 
         System.out.println("-----");
         // user[1] is swiping on user[0]
@@ -130,9 +148,17 @@ public class UserQueueControllerTest {
 
         users = repository.findAll().toArray(new User[0]);
 
-        assertTrue(users[1].getSwipedOn().contains(users[0]));
+        assertTrue(repository.getSwipedOn(users[1].getId()).contains(users[0]));
 
         assertTrue(users[0].getConnections().contains(users[1]));
         assertTrue(users[1].getConnections().contains(users[0]));
+    }
+
+    private static String env() {
+        String value = System.getenv("NEO4J_VERSION");
+        if (value == null) {
+            return "4.2";
+        }
+        return value;
     }
 }

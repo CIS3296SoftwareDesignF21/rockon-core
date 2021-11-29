@@ -46,8 +46,7 @@ public class UserQueueController {
                 .unordered()
                 .filter(otherUser ->
                         !user.equals(otherUser) && user.preferenceMatch(otherUser) &&
-                        !user.getSwipedOn().contains(otherUser))
-                .limit(25)
+                        !repository.getSwipedOn(user.getId()).contains(otherUser)).limit(25)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(filteredUsers);
@@ -57,26 +56,17 @@ public class UserQueueController {
     @GetMapping("/swipe/{id}")
     public ResponseEntity<Void> swipeOnUser(@PathVariable Long id, @RequestParam("user") Long otherUser) {
 
-
-
         if (repository.findById(id).isEmpty() || repository.findById(otherUser).isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
-        /* resolve the persistence issues here!! the sets are not persisting
-         * properly */
         User user = repository.findById(id).get();
         User other = repository.findById(otherUser).get();
 
-        user.getSwipedOn().add(other);
+
+        user.getConnections().add(other);
         user = repository.save(user);
 
-        if (user.getSwipedOn().contains(other) && other.getSwipedOn().contains(user)) {
-            user.getConnections().add(other);
-            other.getConnections().add(user);
-
-            repository.save(user);
-            repository.save(other);
-
+        if (repository.getConnections(user.getId()).contains(other)) {
             return ResponseEntity.ok().build();
         }
 
