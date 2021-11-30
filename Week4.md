@@ -15,3 +15,10 @@ This week I created a simple editing profile screen for the sake of time. I also
 ### Ryan Hardison
 
 I created functionaility for making a new account within the front-end of our applicaiton. This enables the user to enter all designated information about themselves needed for storing them within the database. I also formatted the user inputted data into JSON which is then readable by the back-end for storing.
+
+###Bryan Oberholtzer
+This week I worked on creating a method of navigating between the app pages that different members created. I used the react-navigation
+library along with online references to create a basic demo of page switching on button presses. The integration of the app pages
+was largely unsuccessful as react native has many way to display a page, and the group's general lack of experience with react-native
+meant we were unable to resolve the conflict this created. To demo, I created an account creation page that takes field input then
+sends a POST request to the back end hosted online. As of the demo, backend communication is nonfunctional.
