@@ -1,11 +1,13 @@
 package com.cis.rockon.repository;
 
 import com.cis.rockon.model.User;
+import org.neo4j.driver.internal.shaded.reactor.core.publisher.Mono;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends Neo4jRepository<User, Long> {
 
@@ -26,5 +28,7 @@ public interface UserRepository extends Neo4jRepository<User, Long> {
            "MATCH (u)-[:CONNECTIONS]->(swipes)\n" +
            "RETURN swipes")
     List<User> getSwipedOn(@Param("user") Long id);
+
+    Optional<User> findOneByEmail(String email);
 
 }

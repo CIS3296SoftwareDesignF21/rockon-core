@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -88,5 +89,20 @@ public class UserController {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
+    }
+
+    @PutMapping("/login")
+    public ResponseEntity<User> login(@RequestBody Map<String, Object> payload)
+            // no security here :)
+            throws UserNotFoundException {
+
+            String email = (String) payload.get("email");
+
+            User user = repository.findOneByEmail(email)
+                    .orElseThrow(() ->
+                            new UserNotFoundException("Unable to find user with email " + email)
+                    );
+
+            return ResponseEntity.ok().body(user);
     }
 }

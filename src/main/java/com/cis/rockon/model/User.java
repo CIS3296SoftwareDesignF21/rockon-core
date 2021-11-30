@@ -29,18 +29,6 @@ import java.util.Objects;
 @Accessors(chain = true)
 public class User {
 
-    /*
-    CREATE CONSTRAINT fname_exists IF NOT EXISTS ON (u:User) ASSERT u.firstName IS NOT NULL;
-    CREATE CONSTRAINT lname_exists IF NOT EXISTS ON (u:User) ASSERT u.lastName IS NOT NULL;
-    CREATE CONSTRAINT phone_exists IF NOT EXISTS ON (u:User) ASSERT u.phoneNumber IS NOT NULL;
-    CREATE CONSTRAINT email_exists IF NOT EXISTS ON (u:User) ASSERT u.email IS NOT NULL;
-    CREATE CONSTRAINT birthday_exists IF NOT EXISTS ON (u:User) ASSERT u.birthday IS NOT NULL;
-    CREATE CONSTRAINT location_exists IF NOT EXISTS ON (u:User) ASSERT u.lastSeenLocation IS NOT NULL;
-    CREATE CONSTRAINT search_exists IF NOT EXISTS ON (u:User) ASSERT u.searchRadius IS NOT NULL;
-    CREATE CONSTRAINT bio_exists IF NOT EXISTS ON (u:User) ASSERT u.biography IS NOT NULL;
-    CREATE CONSTRAINT exp_exists IF NOT EXISTS ON (u:User) ASSERT u.yearsOfExperience IS NOT NULL;
-    */
-
     @Id
     @GeneratedValue
     private Long id;
@@ -53,6 +41,12 @@ public class User {
 
     @Email
     private String email;
+
+//    so much for security :)
+//    @ToString.Exclude
+//    @JsonIgnore
+//    @Length(min=8, max=100)
+//    private String password;
 
     private LocalDate birthday;
 
