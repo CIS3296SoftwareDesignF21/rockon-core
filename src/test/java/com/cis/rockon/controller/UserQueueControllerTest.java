@@ -94,7 +94,7 @@ public class UserQueueControllerTest {
         testUsers[0] = repository.save(testUsers[0]);
 
         // user[0] is being swiped on
-        mockMvc.perform(get("/api/user-queue/swipe/420")
+        mockMvc.perform(get("/api/user-queue/swipe/420/yes")
                         .param("user", Long.toString(testUsers[0].getId())))
                 .andExpect(status().isNotFound());
     }
@@ -105,7 +105,7 @@ public class UserQueueControllerTest {
         testUsers[0] = repository.save(testUsers[0]);
 
         // user[0] is swiping
-        mockMvc.perform(get("/api/user-queue/swipe/" + testUsers[0].getId())
+        mockMvc.perform(get("/api/user-queue/swipe/" + testUsers[0].getId() + "/yes")
                         .param("user", "420"))
                 .andExpect(status().isNotFound());
     }
@@ -117,14 +117,14 @@ public class UserQueueControllerTest {
         repository.saveAll(Arrays.asList(testUsers));
 
         // user[0] is swiping on user[1]
-        mockMvc.perform(get("/api/user-queue/swipe/" + testUsers[0].getId())
+        mockMvc.perform(get("/api/user-queue/swipe/" + testUsers[0].getId() +"/yes")
                 .param("user", Long.toString(testUsers[1].getId())))
                 .andExpect(status().isNoContent());
 
         assertTrue(repository.getSwipedOn(testUsers[0].getId()).contains(testUsers[1]));
 
         // user[1] is swiping on user[0]
-        mockMvc.perform(get("/api/user-queue/swipe/" + testUsers[1].getId())
+        mockMvc.perform(get("/api/user-queue/swipe/" + testUsers[1].getId() + "/yes")
                         .param("user", Long.toString(testUsers[0].getId())))
                 .andExpect(status().isOk());
 

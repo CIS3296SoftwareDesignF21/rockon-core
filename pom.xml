@@ -10,12 +10,12 @@
     </parent>
     <groupId>com.yaki</groupId>
     <artifactId>RockOn</artifactId>
-    <version>1.0.0</version>
+    <version>4.0.0</version>
     <name>RockOn</name>
     <description>RockOn</description>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <properties>
-        <java.version>11</java.version>
+        <java.version>8</java.version>
         <spring-boot.run.jvmArguments>-Duser.timezone=EST</spring-boot.run.jvmArguments>
     </properties>
     <dependencies>
@@ -214,6 +214,15 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>appengine-maven-plugin</artifactId>
+                <version>2.4.1</version>
+                <configuration>
+                    <projectId>GCLOUD_CONFIG</projectId>
+                    <version>GCLOUD_CONFIG</version>
                 </configuration>
             </plugin>
         </plugins>
