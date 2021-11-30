@@ -58,4 +58,7 @@ Although Tyler is young, he is like an old person when it comes to technology. H
 
 # How to Install
 
+# How to Test
+With the repository cloned and Maven installed, run `mvn test`. The unit tests rely on Neo4j Testcontainers, so you will need to install [Docker](https://docs.docker.com/get-docker/) first.
+
 

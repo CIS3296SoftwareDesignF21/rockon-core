@@ -6,16 +6,11 @@ import com.cis.rockon.repository.UserRepository;
 import org.hibernate.PropertyValueException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.neo4j.core.Neo4jOperations;
-import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -39,7 +34,7 @@ public class UserController {
 
             /* if the posted data is missing values that are required
              * or if we have a unique constraint violation */
-        } catch (PropertyValueException | DataIntegrityViolationException e) {
+        } catch (PropertyValueException | DataIntegrityViolationException | IllegalStateException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
@@ -68,13 +63,12 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        try {
-            repository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (EmptyResultDataAccessException e) {
-            logger.warn(e.getMessage());
+
+        if (!repository.existsById(id))
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+
+        repository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping("/{id}")

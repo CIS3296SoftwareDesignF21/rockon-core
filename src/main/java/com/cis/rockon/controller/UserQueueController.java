@@ -3,10 +3,8 @@ package com.cis.rockon.controller;
 import com.cis.rockon.model.User;
 import com.cis.rockon.repository.UserRepository;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,7 +59,6 @@ public class UserQueueController {
 
         User user = repository.findById(id).get();
         User other = repository.findById(otherUser).get();
-
 
         user.getConnections().add(other);
         user = repository.save(user);

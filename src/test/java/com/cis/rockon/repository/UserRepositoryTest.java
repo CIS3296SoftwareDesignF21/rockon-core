@@ -3,11 +3,11 @@ package com.cis.rockon.repository;
 import com.cis.rockon.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.Neo4jContainer;
@@ -17,10 +17,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @Testcontainers
 @SpringBootTest
+@ActiveProfiles("test")
 public class UserRepositoryTest {
     private static final String PASSWORD = "foobar";
 
@@ -33,7 +32,6 @@ public class UserRepositoryTest {
         registry.add("spring.neo4j.uri", neo4jContainer::getBoltUrl);
         registry.add("spring.neo4j.authentication.username", () -> "neo4j");
         registry.add("spring.neo4j.authentication.password", () -> PASSWORD);
-        registry.add("spring.data.neo4j.database", () -> "neo4j");
     }
 
     @BeforeEach
@@ -95,7 +93,7 @@ public class UserRepositoryTest {
     private static String env() {
         String value = System.getenv("NEO4J_VERSION");
         if (value == null) {
-            return "4.2";
+            return "4.3";
         }
         return value;
     }

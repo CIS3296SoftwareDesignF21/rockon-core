@@ -1,7 +1,6 @@
 package com.cis.rockon.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,10 +15,10 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 import javax.validation.constraints.Email;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.time.LocalDate;
 
 
 
@@ -30,24 +29,31 @@ import java.time.LocalDate;
 @Accessors(chain = true)
 public class User {
 
+    /*
+    CREATE CONSTRAINT fname_exists IF NOT EXISTS ON (u:User) ASSERT u.firstName IS NOT NULL;
+    CREATE CONSTRAINT lname_exists IF NOT EXISTS ON (u:User) ASSERT u.lastName IS NOT NULL;
+    CREATE CONSTRAINT phone_exists IF NOT EXISTS ON (u:User) ASSERT u.phoneNumber IS NOT NULL;
+    CREATE CONSTRAINT email_exists IF NOT EXISTS ON (u:User) ASSERT u.email IS NOT NULL;
+    CREATE CONSTRAINT birthday_exists IF NOT EXISTS ON (u:User) ASSERT u.birthday IS NOT NULL;
+    CREATE CONSTRAINT location_exists IF NOT EXISTS ON (u:User) ASSERT u.lastSeenLocation IS NOT NULL;
+    CREATE CONSTRAINT search_exists IF NOT EXISTS ON (u:User) ASSERT u.searchRadius IS NOT NULL;
+    CREATE CONSTRAINT bio_exists IF NOT EXISTS ON (u:User) ASSERT u.biography IS NOT NULL;
+    CREATE CONSTRAINT exp_exists IF NOT EXISTS ON (u:User) ASSERT u.yearsOfExperience IS NOT NULL;
+    */
+
     @Id
     @GeneratedValue
     private Long id;
 
-    @NotNull
     private String firstName;
 
-    @NotNull
     private String lastName;
 
-    @NotNull
     private String phoneNumber;
 
-    @NotNull
     @Email
     private String email;
 
-    @NotNull
     private LocalDate birthday;
 
     private double[] lastSeenLocation = new double[2]; // {lat, long}
@@ -55,11 +61,9 @@ public class User {
     @Range(min=1, max=25)
     private Integer searchRadius = 25;
 
-    @NotNull
     @Length(max=500)
     private String biography;
 
-    @NotNull
     @Range(min=0, max=99)
     private Integer yearsOfExperience;
 
@@ -72,7 +76,7 @@ public class User {
 
     // technically a bidirectional relationship, but we specify this at query time
     // user.connections.add(other) if user swipes on other
-    @Relationship(type = "CONNECTIONS", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = "CONNECTIONS", direction = Relationship.Direction.OUTGOING)
     @ToString.Exclude
     @JsonIgnore
     List<User> connections = new ArrayList<>();

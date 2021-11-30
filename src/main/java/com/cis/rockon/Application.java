@@ -2,12 +2,16 @@ package com.cis.rockon;
 
 import com.cis.rockon.model.User;
 import com.cis.rockon.repository.UserRepository;
+import org.neo4j.driver.Driver;
+import org.neo4j.driver.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -22,11 +26,10 @@ import java.util.Collections;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableSwagger2
-@EnableJpaRepositories
+@EnableNeo4jRepositories
 public class Application {
 
-    final
-    UserRepository repository;
+    final UserRepository repository;
 
     public Application(UserRepository repository) {
         this.repository = repository;
@@ -60,11 +63,10 @@ public class Application {
         );
     }
 
+    @Profile("!test")
     @Bean
-    public CommandLineRunner CommandLineRunnerBean() {
-
+    public CommandLineRunner CreateMockUsers() {
         return (args) -> {
-
             repository.deleteAll();
 
             User[] mockUsers = new User[]{
@@ -107,6 +109,28 @@ public class Application {
             repository.save(mockUsers[2]);
 
             repository.saveAll(Arrays.asList(mockUsers));
+        };
+    }
+
+    @Profile("!test")
+    @Bean
+    public CommandLineRunner EnforceDBConstraints(@Autowired Driver driver) {
+        return (args) -> {
+            try (Session session = driver.session()) {
+                 session.writeTransaction(tx -> {
+                 tx.run( "CREATE CONSTRAINT unique_email IF NOT EXISTS ON (u:User) ASSERT u.email IS UNIQUE;");
+                 tx.run( "CREATE CONSTRAINT fname_exists IF NOT EXISTS ON (u:User) ASSERT u.firstName IS NOT NULL;");
+                 tx.run( "CREATE CONSTRAINT lname_exists IF NOT EXISTS ON (u:User) ASSERT u.lastName IS NOT NULL;");
+                 tx.run( "CREATE CONSTRAINT phone_exists IF NOT EXISTS ON (u:User) ASSERT u.phoneNumber IS NOT NULL;");
+                 tx.run( "CREATE CONSTRAINT email_exists IF NOT EXISTS ON (u:User) ASSERT u.email IS NOT NULL;");
+                 tx.run( "CREATE CONSTRAINT birthday_exists IF NOT EXISTS ON (u:User) ASSERT u.birthday IS NOT NULL;");
+                 tx.run( "CREATE CONSTRAINT location_exists IF NOT EXISTS ON (u:User) ASSERT u.lastSeenLocation IS NOT NULL;");
+                 tx.run( "CREATE CONSTRAINT search_exists IF NOT EXISTS ON (u:User) ASSERT u.searchRadius IS NOT NULL;");
+                 tx.run( "CREATE CONSTRAINT bio_exists IF NOT EXISTS ON (u:User) ASSERT u.biography IS NOT NULL;");
+                 tx.run( "CREATE CONSTRAINT exp_exists IF NOT EXISTS ON (u:User) ASSERT u.yearsOfExperience IS NOT NULL;");
+                 return null;
+                });
+            }
         };
     }
 }
