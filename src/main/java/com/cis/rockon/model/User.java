@@ -15,8 +15,6 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
 import javax.validation.constraints.Email;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +50,7 @@ public class User {
     @NotNull
     private LocalDate birthday;
 
-    private double[] lastSeenLocation = new double[2];
+    private double[] lastSeenLocation = new double[2]; // {lat, long}
 
     @Range(min=1, max=25)
     private Integer searchRadius = 25;
@@ -92,6 +90,15 @@ public class User {
         return 0;
     }
 
+    private double distance(User other) {
+        double p = Math.PI/180;
+        double a = 0.5 - Math.cos(p * (lastSeenLocation[0] - other.lastSeenLocation[0])) * 0.5 +
+                Math.cos(p * lastSeenLocation[0]) + Math.cos(p * other.lastSeenLocation[0]) +
+                (1 - Math.cos(p * (lastSeenLocation[1] - other.lastSeenLocation[1]))) * 0.5;
+
+        return Math.asin(Math.sqrt(a)) * 12742; // KM
+    }
+
     public boolean preferenceMatch(User other) {
 
         // if the users have conflicting preferences OR out of location range
@@ -99,8 +106,7 @@ public class User {
                 this.typeTradClimbing == other.typeTradClimbing &&
                 this.typeTopRope == other.typeTopRope &&
                 this.typeFreeSolo == other.typeFreeSolo &&
-                this.typeBouldering == other.typeBouldering; // &&
-//                !(this.lastSeenLocation.distance(other.lastSeenLocation) > this.searchRadius);
-
+                this.typeBouldering == other.typeBouldering &&
+                this.distance(other) <= 25;
     }
 }

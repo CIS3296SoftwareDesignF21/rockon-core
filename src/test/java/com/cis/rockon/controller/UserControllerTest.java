@@ -1,7 +1,6 @@
 package com.cis.rockon.controller;
 
 
-import com.cis.rockon.model.Location;
 import com.cis.rockon.model.User;
 import com.cis.rockon.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
