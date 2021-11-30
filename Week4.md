@@ -10,7 +10,7 @@ This week I worked on finishing several backend features, such as user swiping a
 
 ### Carlos Gonzalez
 
-
+This week I created a simple editing profile screen for the sake of time. I also created a matches screen. Finished and debugged the animations needed for the card. I refacted the three parts and made them into their screen and attempted to create a navigation button that would allow the screens to change without hardcoding it at every attempt.
 
 ### Ryan Hardison
 
