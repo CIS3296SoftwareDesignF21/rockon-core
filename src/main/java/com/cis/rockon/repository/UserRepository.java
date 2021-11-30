@@ -18,15 +18,23 @@ public interface UserRepository extends Neo4jRepository<User, Long> {
            "RETURN DISTINCT matches")
     List<User> getConnections(@Param("user") Long id);
 
-    @Query("MATCH (u) WHERE ID(u) = $user\n" +
+    @Query("MATCH (u:User) WHERE ID(u) = $user\n" +
            "MATCH (u)<-[:CONNECTIONS]-(swipes)\n" +
            "RETURN DISTINCT swipes")
     List<User> getSwipedOnBy(@Param("user") Long id);
 
-    @Query("MATCH (u) WHERE ID(u) = $user\n" +
+    @Query("MATCH (u:User) WHERE ID(u) = $user\n" +
            "MATCH (u)-[:CONNECTIONS]->(swipes)\n" +
            "RETURN DISTINCT swipes")
     List<User> getSwipedOn(@Param("user") Long id);
 
     Optional<User> findOneByEmail(String email);
+
+    @Query("MATCH (u:User) WHERE ID(u) = $user\n" +
+           "MATCH (u)-[:SEEN]->(seen)\n" +
+           "WITH collect(seen) as seen_users\n" +
+           "MATCH (user:User)\n" +
+           "WHERE NOT user IN seen_users AND ID($user) <> 0\n" +
+           "RETURN user LIMIT 25")
+    List<User> getUnseenUsers(@Param("user") Long id);
 }

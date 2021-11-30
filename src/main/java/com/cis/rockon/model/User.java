@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
-
 @Node
 @ToString
 @RequiredArgsConstructor
@@ -74,6 +72,13 @@ public class User {
     @ToString.Exclude
     @JsonIgnore
     List<User> connections = new ArrayList<>();
+
+    // technically a bidirectional relationship, but we specify this at query time
+    // user.seen.add(other) if user has seen other user
+    @Relationship(type = "SEEN", direction = Relationship.Direction.OUTGOING)
+    @ToString.Exclude
+    @JsonIgnore
+    List<User> seen = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

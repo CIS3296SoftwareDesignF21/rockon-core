@@ -25,7 +25,6 @@ public class UserQueueController {
         this.repository = repository;
     }
 
-
     @GetMapping("/{id}")
     @ApiOperation(value = "getUsersSwipeQueue",
             notes = "Returns up to 25 users that match the requesting user's preferences")
@@ -37,22 +36,20 @@ public class UserQueueController {
 
         User user = repository.findById(id).get();
 
-        List<User> users = repository.findAll();
+        List<User> users = repository.getUnseenUsers(id);
 
         List<User> filteredUsers = users
                 .stream()
                 .unordered()
-                .filter(otherUser ->
-                        !user.equals(otherUser) && user.preferenceMatch(otherUser) &&
-                        !repository.getSwipedOn(user.getId()).contains(otherUser)).limit(25)
+                .filter(user::preferenceMatch).limit(25)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(filteredUsers);
     }
 
     /* returns 204 if swipe worked but no match, 200 if swipe worked and match */
-    @GetMapping("/swipe/{id}")
-    public ResponseEntity<Void> swipeOnUser(@PathVariable Long id, @RequestParam("user") Long otherUser) {
+    @GetMapping("/swipe/{id}/yes")
+    public ResponseEntity<Void> swipeOnUserYes(@PathVariable Long id, @RequestParam("user") Long otherUser) {
 
         if (repository.findById(id).isEmpty() || repository.findById(otherUser).isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -61,12 +58,27 @@ public class UserQueueController {
         User other = repository.findById(otherUser).get();
 
         user.getConnections().add(other);
+        user.getSeen().add(other);
         user = repository.save(user);
 
         if (repository.getConnections(user.getId()).contains(other)) {
             return ResponseEntity.ok().build();
         }
 
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/swipe/{id}/no")
+    public ResponseEntity<Void> swipeOnUserNo(@PathVariable Long id, @RequestParam("user") Long otherUser) {
+
+        if (repository.findById(id).isEmpty() || repository.findById(otherUser).isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        User user = repository.findById(id).get();
+        User other = repository.findById(otherUser).get();
+
+        user.getSeen().add(other);
+        repository.save(user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
