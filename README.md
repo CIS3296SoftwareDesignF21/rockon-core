@@ -42,10 +42,11 @@ See the [mobile repository](https://github.com/CIS3296SoftwareDesignF21/rockon-m
 4. Run the SpringBoot application by running `mvn spring-boot:run` (note: Java 8 is required)
 5. Visit localhost:8080/swagger-ui/#/ to see API endpoints and models
 
+# How to Test
+With the repository cloned and Maven installed, run `mvn test`. The unit tests rely on Neo4j Testcontainers, so you will need to install [Docker](https://docs.docker.com/get-docker/) first.
+
 # Weekly READMEs
 - [Week 1](/Week1.md)
 - [Week 2](/Week2.md)
 - [Week 3](/Week3.md)
 - [Week 4](/Week4.md)
-
-

@@ -7,12 +7,12 @@ import org.hibernate.PropertyValueException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -20,7 +20,7 @@ public class UserController {
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    private UserRepository repository;
+    private final UserRepository repository;
 
     public UserController(UserRepository repository) {
         this.repository = repository;
@@ -29,13 +29,13 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<User> createNewUser(@RequestBody User newUser) {
         try {
-
+            newUser.setId(null);
             User user = repository.save(newUser);
-            return ResponseEntity.ok().body(repository.save(user));
+            return ResponseEntity.ok().body(user);
 
             /* if the posted data is missing values that are required
              * or if we have a unique constraint violation */
-        } catch (PropertyValueException | DataIntegrityViolationException e) {
+        } catch (PropertyValueException | DataIntegrityViolationException | IllegalStateException e) {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
@@ -57,19 +57,19 @@ public class UserController {
     @GetMapping("")
     public ResponseEntity<List<User>> getAllUsers() {
 
-        return ResponseEntity.ok(repository.findAll());
+        List<User> users = repository.findAll();
+        return ResponseEntity.ok(users);
 
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        try {
-            repository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (EmptyResultDataAccessException e) {
-            logger.warn(e.getMessage());
+
+        if (!repository.existsById(id))
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+
+        repository.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping("/{id}")
@@ -89,5 +89,33 @@ public class UserController {
             logger.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
+    }
+
+    @PutMapping("/login")
+    public ResponseEntity<User> login(@RequestBody Map<String, Object> payload)
+            // no security here :)
+            throws UserNotFoundException {
+
+            String email = (String) payload.get("email");
+
+            User user = repository.findOneByEmail(email)
+                    .orElseThrow(() ->
+                            new UserNotFoundException("Unable to find user with email " + email)
+                    );
+
+            return ResponseEntity.ok().body(user);
+    }
+
+    @GetMapping("/{id}/connections")
+    public ResponseEntity<List<User>> getConnections(@PathVariable Long id) {
+
+        if (!repository.existsById(id))
+            throw new UserNotFoundException("Unable to find user with id " + id);
+
+        List<User> users = repository.getConnections(id);
+        for (User u : users)
+            System.out.println(u.toString());
+
+        return ResponseEntity.ok().body(users);
     }
 }
