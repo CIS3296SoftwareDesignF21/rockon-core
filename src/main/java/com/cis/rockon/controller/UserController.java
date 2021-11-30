@@ -105,4 +105,17 @@ public class UserController {
 
             return ResponseEntity.ok().body(user);
     }
+
+    @GetMapping("/{id}/connections")
+    public ResponseEntity<List<User>> getConnections(@PathVariable Long id) {
+
+        if (!repository.existsById(id))
+            throw new UserNotFoundException("Unable to find user with id " + id);
+
+        List<User> users = repository.getConnections(id);
+        for (User u : users)
+            System.out.println(u.toString());
+
+        return ResponseEntity.ok().body(users);
+    }
 }
